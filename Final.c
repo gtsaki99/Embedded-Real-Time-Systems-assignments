@@ -11,10 +11,10 @@
 #include <sys/types.h>
 
 
-char macpool[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+char macpool[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}; //character set for MAC address creation
 int elementsAdded = 0;
 int elementsLeft = 1000;
-char filename[] = "Mac_Addresses.txt";
+char filename[] = "Mac_Addresses.txt"; //the file where the MAC addresses will be stored
 
 typedef struct
 {
@@ -22,7 +22,7 @@ typedef struct
     void *(*generate)(void *);
     struct timeval insertionTime;
     bool isClose, old;
-} macAddress;
+} macAddress;                           //the struct that represents the MAC address
 
 typedef struct
 {
@@ -40,7 +40,7 @@ typedef struct
     queue* close;
     struct timeval fourteen; 
 
-} lstruct;
+} lstruct;                      //the struct to be "loaded" to the thread
 
 struct timeval tic()
 {
@@ -75,7 +75,7 @@ void macAddressGenerator(char *mac)
     mac[17] = '\0';
 }
 
-void createStarterAddresses(int *addresses)
+void createStarterAddresses(int *addresses) //this function generates the MAC addresses that will be used throughout the program
 {
 
     FILE *fp = fopen(filename, "w");
@@ -90,7 +90,7 @@ void createStarterAddresses(int *addresses)
     free(mac);
 }
 
-void saveTimestamp(double timestamp){
+void saveTimestamp(double timestamp){           
 
     FILE *fp = fopen("Timestamps.bin", "ab");
     fprintf(fp, "%f\n",timestamp);
@@ -116,12 +116,12 @@ void readMac(int place, char *inputAddress)
     fclose(fp);
 }
 
-void BTNearMe(char *inputAddress, int *addresses)
+void BTNearMe(char *inputAddress, int *addresses)  //the requested function that selects random MAC addresses from the file
 {
     readMac(rand() % *addresses, inputAddress);
 }
 
-void uploadContacts(queue *q)
+void uploadContacts(queue *q) //this functions writes the MAC addresses that were considered close contacts in a file with the time they were written as title
 {
     time_t t;
     time(&t); 
@@ -150,7 +150,7 @@ void uploadContacts(queue *q)
     fclose(fp);
 }
 
-bool findMac(macAddress *target, queue *q)
+bool findMac(macAddress *target, queue *q)  //used to detect a MAC address we need
 {
     macAddress *temp;
     if (q->head > q->tail)
@@ -176,7 +176,7 @@ bool findMac(macAddress *target, queue *q)
     return false;
 }
 
-bool isClose(macAddress *target, queue *q)
+bool isClose(macAddress *target, queue *q) //determines if a contact is close or not
 {
     if (findMac(target, q))
     {
@@ -210,7 +210,7 @@ bool isInFile(char *inputAddress, int *addresses)
     return false;
 }
 
-bool testCOVID()
+bool testCOVID()  //the function that simulates the COVID testing program
 {
     srand(time(NULL));
     return (rand() & 1);
@@ -280,7 +280,7 @@ void queueDelete(queue *q, macAddress *out)
     return;
 }
 
-bool deleteOld(queue *q)
+bool deleteOld(queue *q)       //deletes the contacts that are old and not significant anymore
 {
     macAddress *temp = q->buf[q->head];
     if (toc(temp->insertionTime) > 12){
@@ -290,7 +290,7 @@ bool deleteOld(queue *q)
     return false;
 }
 
-void *loadThread(void *argument)
+void *loadThread(void *argument) //
 {
     lstruct *args;
     args = (lstruct *)argument;
